@@ -2,6 +2,7 @@ require 'thread'
 require 'Kayak'
 require 'rack'
 require 'uri'
+require 'StringIO'
 
 class String
     def to_byte_segment
@@ -23,6 +24,10 @@ end
 module Rayak
     class SchedulerHandler
         include Kayak::ISchedulerDelegate
+
+        def on_exception(scheduler, e)
+            System::Console::WriteLine e
+        end
     end
 
     class RequestHandler
@@ -59,6 +64,10 @@ module Rayak
                 while @stream.gets != "\r\n" do end
             end
             @on_end.call(self) if @on_end
+        end
+
+        def on_error(e)
+            System::Console::WriteLine e
         end
 
         def method
